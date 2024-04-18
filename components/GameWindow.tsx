@@ -13,7 +13,6 @@ import {
   getSecondGuess,
   getWinningDoor,
   revealDoor,
-  reset,
   getEndGame,
 } from '@/redux/gameStateSlice';
 import Button from './Button';
@@ -30,10 +29,10 @@ const GameWindow = () => {
 
   useEffect(() => {
     if (firstGuess !== null && secondGuess === null) {
-      const openDoorId = doors.filter(
+      const doorIdToReveal = doors.filter(
         (door) => door.id !== winningDoor && door.id !== firstGuess
       )[0].id;
-      dispatch(revealDoor({ id: openDoorId }));
+      dispatch(revealDoor({ id: doorIdToReveal }));
     }
     if (firstGuess !== null && secondGuess !== null) {
       dispatch(endGameAction());
@@ -45,11 +44,11 @@ const GameWindow = () => {
       return '🏆\nPrize';
     }
 
-    if (firstGuess !== null && firstGuess === id) {
+    if (!endGame && firstGuess !== null && firstGuess === id) {
       return 'Guessed';
     }
 
-    if (revealedDoor === id) {
+    if ((endGame && id !== winningDoor) || (!endGame && revealedDoor === id)) {
       return 'Nothing';
     }
 
@@ -62,12 +61,16 @@ const GameWindow = () => {
     }
   };
 
+  const nonRevealedDoor = doors.filter((door) => {
+    return firstGuess !== door.id && revealedDoor !== door.id;
+  })[0].id;
+
   const handleKeepChoiceOnClick = () => {
     dispatch(secondGuessAction({ id: firstGuess }));
   };
 
   const handleOtherChoiceOnClick = () => {
-    dispatch(secondGuessAction({ id: 2 }));
+    dispatch(secondGuessAction({ id: nonRevealedDoor }));
   };
 
   return (
@@ -76,6 +79,7 @@ const GameWindow = () => {
         {doors.map((door) => (
           <Door
             key={door.id}
+            id={door.id}
             onClick={() => handleOnClick(door.id)}
             label={getLabel(door.id)}
           />
@@ -102,11 +106,11 @@ const GameWindow = () => {
             </p>
             <div className='flex justify-between'>
               <Button
-                label='Keep my choice'
+                label={`Keep my choice (Door ${firstGuess + 1})`}
                 onClick={() => handleKeepChoiceOnClick()}
               />
               <Button
-                label='Choose Other door'
+                label={`Choose Other door (Door ${nonRevealedDoor + 1})`}
                 onClick={() => handleOtherChoiceOnClick()}
               />
             </div>

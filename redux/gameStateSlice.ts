@@ -4,9 +4,11 @@ import { RootState } from './store';
 
 const doors: DoorType[] = [{ id: 0 }, { id: 1 }, { id: 2 }];
 
+const randomNumber = Math.floor(Math.random() * 3);
+
 const initialGameState: GameStateType = {
   doors,
-  winningDoor: Math.floor(Math.random() * 3),
+  winningDoor: randomNumber,
   firstGuess: null,
   secondGuess: null,
   hasWon: false,
@@ -19,7 +21,9 @@ export const gameStateSlice = createSlice({
   name: 'gameState',
   initialState: initialGameState,
   reducers: {
-    reset: () => initialGameState,
+    reset: () => {
+      return { ...initialGameState, randomNumber };
+    },
     revealDoor: (state, action) => {
       state.revealedDoor = action.payload.id;
     },
