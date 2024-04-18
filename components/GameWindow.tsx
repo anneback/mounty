@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Door from './Door';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -16,13 +16,8 @@ import {
   reset,
   getEndGame,
 } from '@/redux/gameStateSlice';
-import Modal from './Modal';
 import Button from './Button';
-
-// game state
-// winningDoor
-// hasGuessed
-// won/lost
+import EndGame from './EndGame';
 
 const GameWindow = () => {
   const dispatch = useAppDispatch();
@@ -46,6 +41,10 @@ const GameWindow = () => {
   }, [dispatch, doors, firstGuess, secondGuess, winningDoor]);
 
   const getLabel = (id: number | null) => {
+    if (endGame && id === winningDoor) {
+      return '🏆\nPrize';
+    }
+
     if (firstGuess !== null && firstGuess === id) {
       return 'Guessed';
     }
@@ -71,11 +70,9 @@ const GameWindow = () => {
     dispatch(secondGuessAction({ id: 2 }));
   };
 
-  const hasWon = secondGuess !== null && secondGuess === winningDoor;
-
   return (
     <div>
-      <div className='flex justify-center mt-4'>
+      <div className='flex justify-center mt-4 border-b-2 mb-10 pb-4'>
         {doors.map((door) => (
           <Door
             key={door.id}
@@ -84,14 +81,14 @@ const GameWindow = () => {
           />
         ))}
       </div>
-      <div className='border-t-2 mt-10 pt-4'>
+      <div>
         {firstGuess === null && (
           <>
             <h2 className='text-center text-xl'>
               Welcome to 3 doors game show!
             </h2>
             <h2 className='text-center text-lg font-bold text-orange-500 mt-10'>
-              Please click a door 👆
+              To play, please click a door 👆
             </h2>
           </>
         )}
@@ -115,22 +112,7 @@ const GameWindow = () => {
             </div>
           </>
         )}
-        {endGame && hasWon && (
-          <div className='flex flex-col items-center'>
-            <h2 className='text-orange-500 text-2xl'>
-              Congratulations you won! 🥳 Now the game is over!
-            </h2>
-            <Button label='New game' onClick={() => dispatch(reset())} />
-          </div>
-        )}
-        {endGame && !hasWon && (
-          <div className='flex flex-col items-center'>
-            <h2 className='text-orange-500 text-2xl mb-4'>
-              Game Over 🙁! Unfortunately you did not win this time.
-            </h2>
-            <Button label='New game' onClick={() => dispatch(reset())} />
-          </div>
-        )}
+        <EndGame />
       </div>
     </div>
   );
