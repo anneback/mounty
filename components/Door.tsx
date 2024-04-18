@@ -1,23 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useAppSelector } from '@/redux/hooks';
+import {
+  getDoors,
+  getFirstGuess,
+  getSecondGuess,
+} from '@/redux/gameStateSlice';
+import { useEffect } from 'react';
 
 type DoorProps = {
-  content: string;
+  onClick?: () => void;
+  label?: string;
 };
 
 const Door = (props: DoorProps) => {
-  const { content } = props;
-  const [isOpen, setIsOpen] = useState(false);
+  const { onClick, label = 'Door' } = props;
 
-  const calcLabel = !isOpen ? 'Door' : content;
+  const nothingDoor = label.toLowerCase() === 'nothing';
+  const guessedDoor = label.toLowerCase() === 'guessed';
 
   return (
     <button
-      className='bg-orange-600 hover:bg-orange-500 font-semibold hover:text-white h-36 w-20 border border-black hover:border-transparent rounded mx-4'
-      onClick={() => setIsOpen(true)}
+      className={`${
+        nothingDoor
+          ? 'bg-slate-600 hover:bg-slate-500'
+          : 'bg-orange-600 hover:bg-orange-500'
+      } ${
+        guessedDoor ? 'text-slate-600' : 'text-white'
+      } font-semibold h-36 w-20 border border-white hover:border-yellow-500 mx-4`}
+      onClick={onClick}
     >
-      {calcLabel}
+      {label}
     </button>
   );
 };

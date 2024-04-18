@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Layout from '@/components/Layout';
+import StoreProvider from './StoreProvider';
 
 export const metadata: Metadata = {
   title: 'Game show',
-  description: 'Mounty Hall problem',
+  description: 'Monty Hall problem',
 };
 
 export default function RootLayout({
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html>
       <body>
-        <Layout>{children}</Layout>
+        <StoreProvider>
+          <Layout>{children}</Layout>
+        </StoreProvider>
       </body>
     </html>
   );
