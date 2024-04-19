@@ -30,9 +30,16 @@ const GameWindow = () => {
 
   useEffect(() => {
     if (firstGuess !== null && secondGuess === null) {
-      const doorIdToReveal = doors.filter(
+      const availableDoors = doors.filter(
         (door) => door.id !== winningDoor && door.id !== firstGuess
-      )[0].id;
+      );
+      // If the player has picked the winning door as firstGuess
+      // we random pick another door
+      const randomDoorId =
+        availableDoors.length > 1 ? Math.floor(Math.random() * 1) : 0;
+
+      const doorIdToReveal = availableDoors[randomDoorId].id;
+
       dispatch(revealDoor({ id: doorIdToReveal }));
     }
     if (firstGuess !== null && secondGuess !== null) {
@@ -57,6 +64,8 @@ const GameWindow = () => {
   const handleOtherChoiceOnClick = () => {
     dispatch(secondGuessAction({ id: nonRevealedDoor }));
   };
+
+  // TODO: test for whole flow.
 
   return (
     <div>
