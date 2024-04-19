@@ -1,14 +1,17 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { gameStateSlice } from './gameStateSlice';
 
-export const makeStore = () => {
+const rootReducer = combineReducers({ gameState: gameStateSlice.reducer });
+
+export const makeStore = (preloadedState?: Partial<RootState>) => {
   return configureStore({
-    reducer: { gameState: gameStateSlice.reducer },
+    reducer: rootReducer,
+    preloadedState,
   });
 };
 
 // Infer the type of makeStore
 export type AppStore = ReturnType<typeof makeStore>;
 // Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<AppStore['getState']>;
+export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = AppStore['dispatch'];

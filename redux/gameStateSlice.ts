@@ -6,7 +6,7 @@ const doors: DoorType[] = [{ id: 0 }, { id: 1 }, { id: 2 }];
 
 const randomNumber = Math.floor(Math.random() * 3);
 
-const initialGameState: GameStateType = {
+export const initialGameState: GameStateType = {
   doors,
   winningDoor: randomNumber,
   firstGuess: null,
