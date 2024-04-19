@@ -17,6 +17,7 @@ import {
 } from '@/redux/gameStateSlice';
 import Button from './Button';
 import EndGame from './EndGame';
+import { getLabel } from './utils/getLabel';
 
 const GameWindow = () => {
   const dispatch = useAppDispatch();
@@ -38,22 +39,6 @@ const GameWindow = () => {
       dispatch(endGameAction());
     }
   }, [dispatch, doors, firstGuess, secondGuess, winningDoor]);
-
-  const getLabel = (id: number | null) => {
-    if (endGame && id === winningDoor) {
-      return '🏆\nPrize';
-    }
-
-    if (!endGame && firstGuess !== null && firstGuess === id) {
-      return 'Guessed';
-    }
-
-    if ((endGame && id !== winningDoor) || (!endGame && revealedDoor === id)) {
-      return 'Nothing';
-    }
-
-    return '?';
-  };
 
   const handleOnClick = (id: number) => {
     if (firstGuess === null) {
@@ -81,7 +66,13 @@ const GameWindow = () => {
             key={door.id}
             id={door.id}
             onClick={() => handleOnClick(door.id)}
-            label={getLabel(door.id)}
+            label={getLabel(
+              door.id,
+              firstGuess,
+              winningDoor,
+              revealedDoor,
+              endGame
+            )}
           />
         ))}
       </div>
