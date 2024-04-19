@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { screen } from '@testing-library/dom';
-import Door from '../Door';
+import Door from '@/components/Door';
 
 describe('Door', () => {
   it('should render with default label, bg-color and heading', () => {
